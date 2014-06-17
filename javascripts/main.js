@@ -1,65 +1,71 @@
-var words = [];
-$.getJSON("http://playaevents.burningman.com/api/0.2/2013/camp/?callback=?", function(data) {
+updateYearSelect();
+function updateYearSelect() {
+	$('#year').empty();
+	var entity = $('#entity').val();
+	var years = $.grep(['', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], function(n, i) {
+		return entity === "event" ? n !== "2007" && n !== "2008" : true;
+	});
+	for (var i = 0; i < years.length; i++) {
+		$('#year').append("<option value='" + years[i] + "'>" + years[i] + "</option>");
+	}
+}
+
+function drawWordCloud() {
+	var entity = $('#entity').val();
+	var year = $('#year').val();
+	if (entity === "" || year === "")
+		return;
+	
+	var nameAttribute = entity === "event" ? "title" : "name";
+	$.getJSON("http://playaevents.burningman.com/api/0.2/" + year + "/" + entity + "/?callback=?", function(data) {
+		var excluded = ['i', 'of', 'or', 'the', 'n', 'a', 'and', 'an', 'at', 'that', 'la', 'da', 'du', 'de', 'le', 'this', 'be', 'by', 'it', 'for', 'is'];
+		var wordCounts = {};
 		for (var i = 0; i < data.length; i++) {
-			words = words.concat(data[i].name.split(" "));
+			var campNameWords = data[i][nameAttribute]
+				.replace(/[\.,'"-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+0123456789]/g, '')
+				.replace(/\s{2,}/g," ")
+				.split(" ")
+				.map(function(value) { return value.toLowerCase(); })
+				.filter(function(item) { return item.length > 1 && excluded.indexOf(item) === -1; });
+			for (var j = 0; j < campNameWords.length; j++) {
+				wordCounts[campNameWords[j]] = wordCounts.hasOwnProperty(campNameWords[j]) ? wordCounts[campNameWords[j]] + 1 : 1;
+			}
 		}
-		
-		var count = {};
-		for (var i = 0; i < words.length; i++) {
-			if (count.hasOwnProperty(words[i]))
-				count[words[i]] = parseInt(count[words[i]], 10) + 1;
-			else
-				count[words[i]] = 1;
-		}
-		
+
 		var final = [];
+		var biggest = 0;
 		var i = 0;
-		for (var foo in count) {
-			final[i] = [foo, count[foo]];
+		for (var foo in wordCounts) {
+			final[i] = [foo, wordCounts[foo]];
 			i++;
 		}
-		
+		var biggest = printBiggestWord(final);
+
 		WordCloud($('#word_cloud')[0], {
 			list: final,
-			fontFamily: 'Times, serif',
-			//gridSize: Math.round(16 * $('#word_cloud').width() / 1024),
-			//clearCanvas: true,
+			fontFamily: 'Helvetica, serif',
+			gridSize: 7,
+			clearCanvas: true,
 			weightFactor: function (size) {
-				return Math.pow(size, 2.3) * $('#word_cloud').width() / 512;
+				return Math.log(size) / Math.log(biggest) * (200 - 15) + 15;
 			},
+			rotateRatio: 0.5,
+			minRotation: 1.57079633,
+			maxRotation: 1.57079633,
+			backgroundColor: '#f2f2f2',
+			//minSize: 15
 		});
-		
-		
-		/*var fill = d3.scale.category20();
-
-		d3.layout.cloud().size([300, 300])
-			.words(words.map(function(d) {
-					return {text: d, size: 10 + Math.random() * 90};
-				}))
-			.padding(5)
-			.rotate(function() { return ~~(Math.random() * 2) * 90; })
-			.font("Impact")
-			.fontSize(function(d) { return d.size; })
-			.on("end", draw)
-			.start();
-
-		function draw(words) {
-			d3.select("#word_cloud").append("svg")
-				.attr("width", 300)
-				.attr("height", 300)
-				.append("g")
-				.attr("transform", "translate(150,150)")
-				.selectAll("text")
-				.data(words)
-				.enter().append("text")
-				.style("font-size", function(d) { return d.size + "px"; })
-				.style("font-family", "Impact")
-				.style("fill", function(d, i) { return fill(i); })
-				.attr("text-anchor", "middle")
-				.attr("transform", function(d) {
-					return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-				})
-				.text(function(d) { return d.text; });
-		  }*/
 	});
+}
+
+function printBiggestWord(count) {
+	var biggest = 0;
+	for (var i = 0; i < count.length; i++) {
+		if (count[i][1] > biggest)
+		 biggest = count[i][1];
+	}
+	console.log('biggest word was ' + biggest);
+	return biggest;
+}
+
 

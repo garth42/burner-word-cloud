@@ -12,18 +12,18 @@
   </head>
 
   <body>
-	
+  
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/garth42/burner-word-cloud">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/gartholomew/burner-word-cloud">View on GitHub</a>
 
           <h1 id="project_title">burner-word-cloud</h1>
           <h2 id="project_tagline"></h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/garth42/burner-word-cloud/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/garth42/burner-word-cloud/tarball/master">Download this project as a tar.gz file</a>
+              <a class="zip_download_link" href="https://github.com/gartholomew/burner-word-cloud/zipball/gh-pages">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/gartholomew/burner-word-cloud/tarball/gh-pages">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -32,18 +32,33 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>it's some words in a cloud.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
+          <a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>it's some words in a cloud.
+        </h3>
+        <p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
       </section>
-	  <section class="inner"><div id="word_cloud" style="width: 100%; height: 500px"></div></section>
+    
+    <section class="inner" style="text-align: center">
+        thing:
+        <select id="entity" onchange="updateYearSelect()">
+          <option></option>
+          <option value="art">art</option>
+          <option value="event">events</option>
+          <option value="camp">theme camps</option>
+        </select>
+        year:
+        <select id="year"></select>
+        <input type="button" value="do the thing" onclick="drawWordCloud()"/>
+    </section>
+
+    <section class="inner" style="max-width: none; margin: 0px 200px 0px 200px">
+    <div id="word_cloud" style="width: 100%; height: 600px"></div>
+  </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">burner-word-cloud maintained by <a href="https://github.com/garth42">garth42</a></p>
+        <p class="copyright">burner-word-cloud maintained by <a href="https://github.com/gartholomew">gartholomew</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
@@ -52,8 +67,6 @@
 
   </body>
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="javascripts/d3/d3.js"></script>
-  <script src="javascripts/d3-cloud/d3.layout.cloud.js"></script>
   <script src="javascripts/wordcloud2/wordcloud2.js"></script>
   <script src="javascripts/main.js"></script>
 </html>
