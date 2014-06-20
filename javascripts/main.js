@@ -1,12 +1,27 @@
 $(document).ready(function() {
 	updateYearSelect();
+	var stopped = false;
+	$('#draw_word_cloud').click(drawWordCloud);
+	$('body').on('wordcloudstart', function() {
+		stopped = false;
+		$('#draw_word_cloud').attr('value', 'stop').off().click(function() {
+			stopped = true;
+			$('#draw_word_cloud').off().click(drawWordCloud);
+		});
+	});
+	$('body').on('wordcloudstop wordcloudabort', function() {
+		$('#draw_word_cloud').attr('value', 'do the thing');
+	});
+	$('body').on('wordclouddrawn', function() {
+		return !stopped;
+	});
 });
 
 function updateYearSelect() {
 	$('#year').empty();
 	var entity = $('#entity').val();
 	var years = $.grep(['', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'], function(n, i) {
-		return entity === "event" ? n !== "2007" && n !== "2008" : true;
+		return entity === "event" ? $.inArray(n, ['2007', '2008']) < 0 : true;
 	});
 	for (var i = 0; i < years.length; i++) {
 		$('#year').append("<option value='" + years[i] + "'>" + years[i] + "</option>");
@@ -14,14 +29,11 @@ function updateYearSelect() {
 }
 
 function drawWordCloud() {
-	var entity = $('#entity').val();
-	var year = $('#year').val();
+	var entity = $('#entity').val(), year = $('#year').val();
 	if (entity === "" || year === "")
 		return;
 
-	$('#draw_word_cloud').attr('value', 'doing...');
-	$('#word_cloud').height(window.innerHeight - $('#footer_wrap').height() - $('#main_content').height() - 40);
-	
+	$('#draw_word_cloud').attr('value', 'doing...').off();
 	$.getJSON("http://playaevents.burningman.com/api/0.2/" + year + "/" + entity + "/?callback=?", function(data) {
 		var excluded = ['i', 'of', 'or', 'the', 'n', 'a', 'and',
 						'an', 'at', 'that', 'la', 'da', 'du', 'de',
@@ -41,37 +53,36 @@ function drawWordCloud() {
 			}
 		}
 
-		var showSingles = $('#show_single_words').is(':checked');
-		var wordCountsArray = makeArrayFromMap(wordCounts, showSingles);
-		var biggest = getBiggestWord(wordCountsArray);
+		var wordCountsArray = makeArrayFromMap(wordCounts);
+		var biggestWord = getBiggestWord(wordCountsArray);
+		var	colours = ['#FF0000', '#FF8000', '#D4CE19', '#D6CF00', '#C43323', '#ED9015', '#82001E', '#E25822', '#C20A0A', '#9C1919', '#E62600'];
+		var maxFont = 220, minFont = 17, ninetyDegreesInRads = 1.57079633;
+		$('#word_cloud').height(window.innerHeight - $('#footer_wrap').height() - $('#main_content').height() - 50);
 		WordCloud($('#word_cloud')[0], {
 			list: wordCountsArray,
 			fontFamily: 'Helvetica, serif',
 			gridSize: 7,
 			clearCanvas: true,
-			weightFactor: function (size) {
-				return Math.log(size) / Math.log(biggest) * (220 - 17) + 17;
+			weightFactor: function (wordSize) {
+				return Math.log(wordSize) / Math.log(biggestWord) * (maxFont - minFont) + minFont;
 			},
 			rotateRatio: 0.5,
-			minRotation: 1.57079633,
-			maxRotation: 1.57079633,
+			minRotation: ninetyDegreesInRads,
+			maxRotation: ninetyDegreesInRads,
 			color: function(word, weight, fontSize, distance, theta) {
-				var	colours = ['#FF0000', '#FF8000', '#D4CE19', '#D6CF00', '#C43323', '#ED9015', '#82001E', '#E25822', '#C20A0A', '#9C1919', '#E62600'];
 				return (colours)[Math.floor(Math.random() * colours.length)];
 			},
 			backgroundColor: '#212121',
 			shape: 'square',
-			abortThreshold: 200
-			//hover: function() {window.drawBox}
+			abortThreshold: 1000
 		});
-		$('#draw_word_cloud').attr('value', 'do the thing');
 	});
 }
 
-function makeArrayFromMap(map, showSingles) {
+function makeArrayFromMap(map) {
 	var i = 0, array = [];
 	for (var item in map) {
-		if (!showSingles && map[item] === 1)
+		if (!$('#show_single_words').is(':checked') && map[item] === 1)
 			continue;
 		array[i] = [item, map[item]];
 		i++;
@@ -87,5 +98,3 @@ function getBiggestWord(wordCountsArray) {
 	}
 	return biggest;
 }
-
-

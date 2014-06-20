@@ -13,8 +13,8 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>words in names of things at burning man.</h3>
-        <p>the bigger your browser window, the better. using words that only show up once makes it more cluttered but sometimes they're pretty damn funny. often it can't fit everything, so you'll get a slightly different mix each time. uses the <a href="http://playaevents.burningman.com/api/0.2/docs/">playaevents api</a> and <a href="http://timdream.org/wordcloud2.js">wordcloud2.js</a>.  <3</p>
+        <h3>words in names of things at black rock city.</h3>
+        <p>the bigger your browser window, the better. including words that only show up once makes it more cluttered but sometimes they're pretty funny. often it can't fit everything at once, so running it again might get you a different mix. built with the <a href="http://playaevents.burningman.com/api/0.2/docs/">playaevents api</a> and <a href="http://timdream.org/wordcloud2.js">wordcloud2.js</a>. <3</p>
         <div id="inputs">
           <span class="input">
             <span>thing:</span>
@@ -27,27 +27,27 @@
           </span>
           <span class="input">
             <span>year:</span>
-            <select id="year"></select>
+            <select id="year"/></select>
           </span>
           <span class="input">
-            <input id="show_single_words" type="checkbox" checked>use words that appear once</input>
+            <input id="show_single_words" type="checkbox" checked>include words that appear once</input>
           </span>
           <br/>
-          <input id="draw_word_cloud" type="button" value="do the thing" onclick="drawWordCloud()"/>
+          <input id="draw_word_cloud" type="button" value="do the thing"/>
         </div>
       </section>
       <section id="word_cloud_wrapper" class="inner">
-        <div id="word_cloud"></div>
+        <div id="word_cloud"/>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
-      <footer class="inner" style="padding: 0px ">
+      <footer class="inner">
         <p class="copyright">burner-word-cloud maintained by <a href="https://github.com/gartholomew">gartholomew</a></p>
         <p>published with <a href="http://pages.github.com">github pages</a></p>
       </footer>
-      <a id="forkme_banner" href="https://github.com/gartholomew/burner-word-cloud" style="padding: 30px 50px 10px 10px; top: 0; bottom: 0; right: 0; box-shadow: none">view on github</a>  
+      <a id="forkme_banner" href="https://github.com/gartholomew/burner-word-cloud">view on github</a>  
     </div>
   </body>
   <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
