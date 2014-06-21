@@ -389,6 +389,10 @@ html, body {
   height: 100%;
 }
 
+#main_content {
+  z-index: 1;
+}
+
 #inputs {
   text-align: center;
 }
