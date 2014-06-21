@@ -75,7 +75,7 @@ function drawWordCloud() {
 			},
 			backgroundColor: '#212121',
 			shape: 'square',
-			abortThreshold: 1000
+			abortThreshold: 5000
 		});
 	});
 }
